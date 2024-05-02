@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CheapF</title>
+</head>
+<body>
+    <h1>
+        CheapF
+    </h1>
+    <button>
+        Start scan
+    </button>
+    <br>
+    <br>
+    <div>
+        <table id="flightTable">
+            <thead>
+                <tr>
+                    <th>Price</th>
+                    <th>Destination</th>
+                    <th>Origin</th>
+                    <th>Site</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+    const button = document.querySelector('button');
+
+    button.addEventListener('click', function() {
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(realticketdetails => {
+            const flightTableBody = document.querySelector('#flightTable tbody');
+            flightTableBody.innerHTML = '';
+
+            realticketdetails.forEach(flight => {
+                const flightRow = document.createElement('tr');
+                flightRow.innerHTML = `
+                    <td>${flight.price + "kr"}</td>
+                    <td>${flight.destination}</td>
+                    <td>${flight.origin}</td>
+                    <td><a href="${flight.site}">${domfinder(flight.site)}</a></td>
+                    <td>${flight.date}</td>
+                `;
+                flightTableBody.appendChild(flightRow);
+            });
+        });
+    });
+
+    function domfinder(link){
+        let dom = link.match(/(?<=www\.)[^\/]+/gm);
+        return dom;
+    }
+</script>
+</html>
